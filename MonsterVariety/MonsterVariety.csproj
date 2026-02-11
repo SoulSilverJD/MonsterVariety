@@ -9,6 +9,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>default</LangVersion>
+    <ModZipPath>$(MSBuildThisFileDirectory)/../_releases</ModZipPath>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,6 +19,7 @@
     <UniqueId>mushymato.MonsterVariety</UniqueId>
     <UpdateKeys>Nexus:32241,GitHub:Mushymato/MonsterVariety</UpdateKeys>
     <Version>0.7.1</Version>
+    <BaseManifest>new</BaseManifest>
     <MinimumApiVersion_Behavior>UpdateFull</MinimumApiVersion_Behavior>
     <MinimumGameVersion_Behavior>UpdateFull</MinimumGameVersion_Behavior>
     <Dependencies_VersionBehavior>UpdateFull</Dependencies_VersionBehavior>
