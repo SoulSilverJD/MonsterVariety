@@ -83,6 +83,7 @@ Target `mushymato.MonsterVariety/Data` and add an entry like this:
 
 - `Armored Bug` is the MonsterName used for armored bugs in the skull cavern
 - `Assassin Bug` is the MonsterName used for assassin bugs in desert festival
+- `Skeleton Mage` is the MonsterName used for skeleton mages, who are actually just named `"Skeleton"`
 - Slime enemies will fall back to `Green Slime`, if a less specific entry could not be found
 
 ## Game State Queries

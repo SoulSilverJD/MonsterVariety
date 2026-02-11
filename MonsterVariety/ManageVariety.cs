@@ -158,13 +158,20 @@ internal static class ManageVariety
     {
         Type monsterType = monster.GetType();
         string monsterName = monster.Name;
-        // special case Armored Bug & Assassin Bug sigh
+        // special cases
         if (monster is Bug bug && bug.isArmoredBug.Value)
         {
+            // Armored Bug
             monsterName = "Armored Bug";
+        }
+        else if (monster is Skeleton skeleton && skeleton.isMage.Value)
+        {
+            // Skeleton Mage
+            monsterName = "Skeleton Mage";
         }
         else if (monster.Sprite?.textureName?.Value == "Characters\\Monsters\\Assassin Bug")
         {
+            // Assassin Bug
             monsterName = "Assassin Bug";
         }
 

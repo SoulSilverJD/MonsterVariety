@@ -17,7 +17,7 @@
     <Description>Add skins to monsters.</Description>
     <UniqueId>mushymato.MonsterVariety</UniqueId>
     <UpdateKeys>Nexus:32241,GitHub:Mushymato/MonsterVariety</UpdateKeys>
-    <Version>0.7.0</Version>
+    <Version>0.7.1</Version>
     <MinimumApiVersion_Behavior>UpdateFull</MinimumApiVersion_Behavior>
     <MinimumGameVersion_Behavior>UpdateFull</MinimumGameVersion_Behavior>
     <Dependencies_VersionBehavior>UpdateFull</Dependencies_VersionBehavior>
