@@ -12,7 +12,7 @@ internal class MonsterLightWatcher(Monster monster) : IDisposable
 
     ~MonsterLightWatcher() => Dispose();
 
-    internal static MonsterLightWatcher Create(Monster monster) => new MonsterLightWatcher(monster);
+    internal static MonsterLightWatcher Create(Monster monster) => new(monster);
 
     internal bool Activate(string lightPropsStr)
     {
@@ -20,9 +20,13 @@ internal class MonsterLightWatcher(Monster monster) : IDisposable
         {
             Deactivate();
         }
+        if (monster.currentLocation == null)
+        {
+            return false;
+        }
         string[] lightProps = ArgUtility.SplitBySpaceQuoteAware(lightPropsStr);
         if (
-            !ArgUtility.TryGetInt(lightProps, 0, out int radius, out string error, "string radius")
+            !ArgUtility.TryGetInt(lightProps, 0, out int radius, out string? error, "string radius")
             || !ArgUtility.TryGetOptional(lightProps, 1, out string lightColor, out error, "string lightColor")
         )
         {
@@ -41,7 +45,7 @@ internal class MonsterLightWatcher(Monster monster) : IDisposable
             color,
             LightSource.LightContext.None,
             0L,
-            Game1.currentLocation.NameOrUniqueName
+            monster.currentLocation.NameOrUniqueName
         );
         Game1.currentLightSources.Add(lightSource.Id, lightSource);
         monster.position.fieldChangeVisibleEvent += OnPositionChanged;

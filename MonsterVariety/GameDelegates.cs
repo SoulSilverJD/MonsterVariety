@@ -12,7 +12,7 @@ internal static class GameDelegates
         string[] array,
         int index,
         out double value,
-        out string error,
+        out string? error,
         double defaultValue,
         string name
     )
@@ -46,7 +46,7 @@ internal static class GameDelegates
 
     public static bool RandomImpl(Random random, string[] query, int skipArguments)
     {
-        if (!ArgUtility.TryGetFloat(query, skipArguments, out float valueFlt, out string error, "float chance"))
+        if (!ArgUtility.TryGetFloat(query, skipArguments, out float valueFlt, out string? error, "float chance"))
         {
             ModEntry.Log(error);
             return false;
@@ -97,7 +97,7 @@ internal static class GameDelegates
         string arguments,
         ItemQueryContext context,
         bool avoidRepeat,
-        HashSet<string> avoidItemIds,
+        HashSet<string>? avoidItemIds,
         Action<string, string> logError
     )
     {
@@ -106,8 +106,8 @@ internal static class GameDelegates
             !ArgUtility.TryGet(
                 args,
                 0,
-                out string monsterId,
-                out string error,
+                out string? monsterId,
+                out string? error,
                 allowBlank: false,
                 name: "string monsterId"
             )
