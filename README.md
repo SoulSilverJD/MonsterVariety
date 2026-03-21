@@ -11,9 +11,8 @@ Note: `[CP] Visual Monster Variety` lacks the actual assets since they don't bel
 Target `mushymato.MonsterVariety/Data` and add an entry like this:
 
 ```json
-// The Key/Id should be unique for your mod, to achieve compatibility.
+// The Key should use your mod id, to achieve compatibility.
 "{{ModId}}_Armored Bug": {
-  "Id": "{{ModId}}_Armored Bug",
   // Internal name of the monster, mandatory.
   // If you aren't sure about the name, look for "Try ApplyMonsterVariety on <monster name>" in the trace logs.
   // It's possible for other mods to change this name.

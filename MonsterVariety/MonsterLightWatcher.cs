@@ -5,12 +5,10 @@ using StardewValley.Network;
 
 namespace MonsterVariety;
 
-internal class MonsterLightWatcher(Monster monster) : IDisposable
+internal class MonsterLightWatcher(Monster monster)
 {
-    private Monster monster = monster;
+    private readonly Monster monster = monster;
     private LightSource? lightSource = null;
-
-    ~MonsterLightWatcher() => Dispose();
 
     internal static MonsterLightWatcher Create(Monster monster) => new(monster);
 
@@ -70,15 +68,5 @@ internal class MonsterLightWatcher(Monster monster) : IDisposable
         }
         lightSource.position.X = newValue.X + 32f;
         lightSource.position.Y = newValue.Y + 64f + monster.yOffset;
-    }
-
-    public void Dispose()
-    {
-        if (monster == null || lightSource == null)
-            return;
-        Deactivate();
-        monster = null!;
-        lightSource = null!;
-        GC.SuppressFinalize(this);
     }
 }

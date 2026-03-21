@@ -43,7 +43,6 @@ public sealed class VarietyData
 
 public sealed class MonsterVarietyData
 {
-    public string? Id { get; set; } = null;
     public string? MonsterName { get; set; } = null;
     public Dictionary<string, VarietyData> Varieties { get; set; } = [];
     public Dictionary<string, GenericSpawnItemDataWithCondition>? SharedExtraDrops { get; set; } = null;
@@ -78,7 +77,7 @@ public sealed class MonsterVarietyData
 internal sealed class AssetManager
 {
     internal const string Asset_VarietyData = $"{ModEntry.ModId}/Data";
-    private static List<MonsterVarietyData>? varietyDataRaw = null;
+    private static Dictionary<string, MonsterVarietyData>? varietyDataRaw = null;
     private static readonly Dictionary<string, MonsterVarietyData> varietyData = [];
     internal static Dictionary<string, MonsterVarietyData> VarietyData
     {
@@ -86,9 +85,9 @@ internal sealed class AssetManager
         {
             if (varietyDataRaw == null)
             {
-                varietyDataRaw = Game1.content.Load<List<MonsterVarietyData>>(Asset_VarietyData);
+                varietyDataRaw = Game1.content.Load<Dictionary<string, MonsterVarietyData>>(Asset_VarietyData);
                 int discarded = 0;
-                foreach (MonsterVarietyData vd in varietyDataRaw)
+                foreach (MonsterVarietyData vd in varietyDataRaw.Values)
                 {
                     if (vd.MonsterName == null)
                     {
@@ -117,7 +116,7 @@ internal sealed class AssetManager
     private static void OnAssetRequested(object? sender, AssetRequestedEventArgs e)
     {
         if (e.Name.IsEquivalentTo(Asset_VarietyData))
-            e.LoadFrom(() => new List<MonsterVarietyData>(), AssetLoadPriority.Low);
+            e.LoadFrom(() => new Dictionary<string, MonsterVarietyData>(), AssetLoadPriority.Exclusive);
     }
 
     private static void OnAssetsInvalidated(object? sender, AssetsInvalidatedEventArgs e)
