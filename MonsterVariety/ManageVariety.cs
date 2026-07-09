@@ -279,6 +279,40 @@ internal static class ManageVariety
             }
         }
     }
+    
+    private static string NormalizeMonsterDropId(string itemId)
+    {
+        return itemId.StartsWith("(O)", StringComparison.OrdinalIgnoreCase) ? itemId[3..] : itemId;
+    }
+
+    private static bool ShouldExcludeDrop(
+        string itemId,
+        HashSet<string> excludeIds,
+        HashSet<string> normalizedExcludeIds
+    )
+    {
+        return excludeIds.Contains(itemId) || normalizedExcludeIds.Contains(NormalizeMonsterDropId(itemId));
+    }
+
+    private static void ExcludeDrops(
+        Monster monster,
+        IEnumerable<string>? excludeDrops,
+        int monsterDropCount
+    )
+    {
+        if (excludeDrops == null || monsterDropCount <= 0)
+            return;
+
+        HashSet<string> excludeIds = new(excludeDrops, StringComparer.OrdinalIgnoreCase);
+        HashSet<string> normalizedExcludeIds = new(excludeIds.Select(NormalizeMonsterDropId), StringComparer.OrdinalIgnoreCase);
+        int maxIndex = Math.Min(monsterDropCount, monster.objectsToDrop.Count) - 1;
+        for (int i = maxIndex; i >= 0; i--)
+        {
+            if (ShouldExcludeDrop(
+                monster.objectsToDrop[i], excludeIds, normalizedExcludeIds))
+                monster.objectsToDrop.RemoveAt(i);
+        }
+    }
 
     private static void AddExtraDrops(
         Monster monster,
