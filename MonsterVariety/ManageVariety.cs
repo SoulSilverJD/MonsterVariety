@@ -17,6 +17,26 @@ internal static class ManageVariety
     internal const string ModData_AppliedVarietyLight = $"{ModEntry.ModId}/HasAppliedVarietyLight";
 
     private static readonly ConditionalWeakTable<Monster, MonsterLightWatcher> monsterLightWatchers = [];
+    
+    private static readonly Dictionary<string, int> monsterFieldAliases = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Health"] = Monster.index_health,
+        ["Damage"] = Monster.index_damageToFarmer,
+        ["DamageToFarmer"] = Monster.index_damageToFarmer,
+        ["IsGlider"] = Monster.index_isGlider,
+        ["Glider"] = Monster.index_isGlider,
+        ["Resilience"] = Monster.index_resilience,
+        ["Jitteriness"] = Monster.index_jitteriness,
+        ["MoveTowardPlayerThreshold"] = Monster.index_distanceThresholdToMoveTowardsPlayer,
+        ["DistanceThresholdToMoveTowardsPlayer"] = Monster.index_distanceThresholdToMoveTowardsPlayer,
+        ["Speed"] = Monster.index_speed,
+        ["MissChance"] = Monster.index_missChance,
+        ["MineMonster"] = Monster.index_isMineMonster,
+        ["IsMineMonster"] = Monster.index_isMineMonster,
+        ["ExperienceGained"] = Monster.index_experiencePoints,
+        ["ExperiencePoints"] = Monster.index_experiencePoints,
+        ["DisplayName"] = Monster.index_displayName,
+    };
 
     internal static void Apply(IModHelper helper)
     {
@@ -124,6 +144,141 @@ internal static class ManageVariety
             return false;
         return true;
     }
+    
+    private static bool TryGetMonsterFieldIndex(string key, out int index)
+    {
+        // Match Content Patcher's Fields style: numeric keys use Data/Monsters indexes, string keys use readable aliases.
+        if (int.TryParse(key, out index))
+            return true;
+        return monsterFieldAliases.TryGetValue(key, out index);
+    }
+
+    private static bool TryGetMonsterFieldIntValue(string fieldName, object? value, out int result)
+    {
+        result = 0;
+        if (value == null)
+        {
+            ModEntry.Log($"Skipped monster field '{fieldName}' because its value is null", LogLevel.Warn);
+            return false;
+        }
+        try
+        {
+            result = Convert.ToInt32(value);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ModEntry.Log($"Skipped monster field '{fieldName}' because value '{value}' is not an integer: {ex.Message}", LogLevel.Warn);
+            return false;
+        }
+    }
+
+    private static bool TryGetMonsterFieldBoolValue(string fieldName, object? value, out bool result)
+    {
+        result = false;
+        if (value == null)
+        {
+            ModEntry.Log($"Skipped monster field '{fieldName}' because its value is null", LogLevel.Warn);
+            return false;
+        }
+        try
+        {
+            result = Convert.ToBoolean(value);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ModEntry.Log($"Skipped monster field '{fieldName}' because value '{value}' is not true/false: {ex.Message}", LogLevel.Warn);
+            return false;
+        }
+    }
+
+    private static bool TryGetMonsterFieldDoubleValue(string fieldName, object? value, out double result)
+    {
+        result = 0;
+        if (value == null)
+        {
+            ModEntry.Log($"Skipped monster field '{fieldName}' because its value is null", LogLevel.Warn);
+            return false;
+        }
+        try
+        {
+            result = Convert.ToDouble(value);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ModEntry.Log($"Skipped monster field '{fieldName}' because value '{value}' is not a number: {ex.Message}", LogLevel.Warn);
+            return false;
+        }
+    }
+
+    private static void ApplyMonsterFields(Monster monster, Dictionary<string, object?>? fields)
+    {
+        if (fields == null)
+            return;
+        foreach ((string key, object? value) in fields)
+        {
+            if (!TryGetMonsterFieldIndex(key, out int index))
+            {
+                ModEntry.Log($"Skipped unknown monster field '{key}'", LogLevel.Warn);
+                continue;
+            }
+            switch (index)
+            {
+                case Monster.index_health:
+                    if (TryGetMonsterFieldIntValue(key, value, out int health))
+                    {
+                        // Match vanilla parseMonsterInfo by setting current and max health together.
+                        monster.Health = health;
+                        monster.MaxHealth = health;
+                    }
+                    break;
+                case Monster.index_damageToFarmer:
+                    if (TryGetMonsterFieldIntValue(key, value, out int damage))
+                        monster.DamageToFarmer = damage;
+                    break;
+                case Monster.index_isGlider:
+                    if (TryGetMonsterFieldBoolValue(key, value, out bool isGlider))
+                        monster.isGlider.Value = isGlider;
+                    break;
+                case Monster.index_resilience:
+                    if (TryGetMonsterFieldIntValue(key, value, out int resilience))
+                        monster.resilience.Value = resilience;
+                    break;
+                case Monster.index_jitteriness:
+                    if (TryGetMonsterFieldDoubleValue(key, value, out double jitteriness))
+                        monster.jitteriness.Value = jitteriness;
+                    break;
+                case Monster.index_distanceThresholdToMoveTowardsPlayer:
+                    if (TryGetMonsterFieldIntValue(key, value, out int distanceThreshold))
+                        monster.moveTowardPlayer(distanceThreshold);
+                    break;
+                case Monster.index_speed:
+                    if (TryGetMonsterFieldIntValue(key, value, out int speed))
+                        monster.speed = speed;
+                    break;
+                case Monster.index_missChance:
+                    if (TryGetMonsterFieldDoubleValue(key, value, out double missChance))
+                        monster.missChance.Value = missChance;
+                    break;
+                case Monster.index_isMineMonster:
+                    if (TryGetMonsterFieldBoolValue(key, value, out bool mineMonster))
+                        monster.mineMonster.Value = mineMonster;
+                    break;
+                case Monster.index_experiencePoints:
+                    if (TryGetMonsterFieldIntValue(key, value, out int experienceGained))
+                        monster.ExperienceGained = experienceGained;
+                    break;
+                case Monster.index_displayName:
+                    monster.displayName = value?.ToString() ?? string.Empty;
+                    break;
+                default:
+                    ModEntry.Log($"Skipped unsupported monster field '{key}' (index {index})", LogLevel.Warn);
+                    break;
+            }
+        }
+    }
 
     private static void AddExtraDrops(
         Monster monster,
@@ -219,6 +374,7 @@ internal static class ManageVariety
                     .ToList();
                 VarietyData chosenVariety = Random.Shared.ChooseFrom(validVarietyList);
                 textureName = chosenVariety.Sprite!;
+                ApplyMonsterFields(monster, chosenVariety.Fields);
                 monster.modData[ModData_AppliedVariety] = textureName;
                 if (chosenVariety.LightProps != null)
                     monster.modData[ModData_AppliedVarietyLight] = chosenVariety.LightProps;
