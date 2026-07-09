@@ -382,6 +382,7 @@ internal static class ManageVariety
                 null,
                 $"{ModEntry.ModId}:{monsterName}"
             );
+            int monsterDropCount = monster.objectsToDrop.Count;
             if (monster.isHardModeMonster.Value)
             {
                 varieties = data.DangerousVarieties;
@@ -409,6 +410,7 @@ internal static class ManageVariety
                 VarietyData chosenVariety = Random.Shared.ChooseFrom(validVarietyList);
                 textureName = chosenVariety.Sprite!;
                 ApplyMonsterFields(monster, chosenVariety.Fields);
+                ExcludeDrops(monster, chosenVariety.ExcludeDrops, monsterDropCount);
                 monster.modData[ModData_AppliedVariety] = textureName;
                 if (chosenVariety.LightProps != null)
                     monster.modData[ModData_AppliedVarietyLight] = chosenVariety.LightProps;
