@@ -42,6 +42,7 @@ Target `mushymato.MonsterVariety/Data` and add an entry like this:
         0: 500, // Health
         1: 15 // Damage
       },
+      "ExcludeDrops": [ "(O)684" ], // Optional item IDs to exclude from this monster's already-rolled Data/Monsters drops.
       "ExtraDrops": {
         // extra drop items, these are item queries with Condition https://stardewvalleywiki.com/Modding:Item_queries
         "{{ModId}}_ExtraMeat1": {
@@ -82,11 +83,22 @@ Target `mushymato.MonsterVariety/Data` and add an entry like this:
 ```
 
 `mushymato.MonsterVariety/Data` is actually a list, two mods adding varieties to the same monster will appear as 2 different entries so as long as they use unique id. These entries will be merged before used to check what variants should apply.
+
 ### Fields
 
 The optional `Fields` block edits monster stats after a variety is chosen. Keys can be `Data/Monsters` field indexes or readable aliases.
 
 Supported fields are `0`/`Health`, `1`/`Damage`, `4`/`IsGlider`, `7`/`Resilience`, `8`/`Jitteriness`, `9`/`MoveTowardPlayerThreshold`, `10`/`Speed`, `11`/`MissChance`, `12`/`MineMonster`, `13`/`ExperienceGained`, and `14`/`DisplayName`. `Health` sets both current and max health, matching monster data parsing.
+
+### ExcludeDrops
+
+The optional `ExcludeDrops` list excludes matching item IDs from the monster's already-rolled `Data/Monsters` drops after a variety is chosen. This only filters the base monster drops that existed before Monster Variety adds shared or variety extra drops.
+
+```json
+"ExcludeDrops": [ "(O)684" ]
+```
+
+This is intended for variants that should not keep a specific vanilla monster drop, without editing `Data/Monsters` for the whole monster type. It does not patch later rerolls like Burglar's Ring.
 
 ## Special Cases
 
