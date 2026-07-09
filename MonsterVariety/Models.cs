@@ -39,6 +39,8 @@ public sealed class VarietyData
     public string? HUDNotifIconItem { get; set; } = null;
     
     public Dictionary<string, object?>? Fields { get; set; } = null;
+    
+    public List<string>? ExcludeDrops { get; set; } = null;
 
     public Dictionary<string, GenericSpawnItemDataWithCondition>? ExtraDrops { get; set; } = null;
 }
