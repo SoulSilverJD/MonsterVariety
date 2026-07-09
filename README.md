@@ -37,6 +37,11 @@ Target `mushymato.MonsterVariety/Data` and add an entry like this:
       "HUDNotif": "Message Here", // Optional HUD notif message that will appear when this variety appears
       "HUDNotifIconItem": "(O)QualifiedItemId", // Optional item icon to use for HUD notif message
       "LightProps": "5 Red", // Optional light source to attach, format is "Radius" or "Radius Color"
+      "Fields": {
+        // Optional Data/Monsters field edits for this variety only, using Content Patcher field indexes or aliases.
+        0: 500, // Health
+        1: 15 // Damage
+      },
       "ExtraDrops": {
         // extra drop items, these are item queries with Condition https://stardewvalleywiki.com/Modding:Item_queries
         "{{ModId}}_ExtraMeat1": {
@@ -77,6 +82,11 @@ Target `mushymato.MonsterVariety/Data` and add an entry like this:
 ```
 
 `mushymato.MonsterVariety/Data` is actually a list, two mods adding varieties to the same monster will appear as 2 different entries so as long as they use unique id. These entries will be merged before used to check what variants should apply.
+### Fields
+
+The optional `Fields` block edits monster stats after a variety is chosen. Keys can be `Data/Monsters` field indexes or readable aliases.
+
+Supported fields are `0`/`Health`, `1`/`Damage`, `4`/`IsGlider`, `7`/`Resilience`, `8`/`Jitteriness`, `9`/`MoveTowardPlayerThreshold`, `10`/`Speed`, `11`/`MissChance`, `12`/`MineMonster`, `13`/`ExperienceGained`, and `14`/`DisplayName`. `Health` sets both current and max health, matching monster data parsing.
 
 ## Special Cases
 
